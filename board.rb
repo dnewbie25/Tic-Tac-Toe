@@ -12,15 +12,17 @@ class Board
   end
 
   def mark_movement(position, player)
-    @grid.each do |row|
-      (0...row.length).each do |cell|
-        if row[cell] == position
-          row[cell] = player.marker
+    if self.empty_cell?(position)
+      @grid.each do |row|
+        (0...row.length).each do |cell|
+          if row[cell] == position
+            row[cell] = player.marker
+          end
         end
       end
     end
   end
-
+  
   def win?(player)
     @grid.each do |row|
       if row.all?(player.marker)
@@ -41,20 +43,61 @@ class Board
     end
     return false
   end
-end
 
+  def tie? 
+    if !win?(player) && !self.empty?
+      return true 
+    else 
+      return false
+    end
+  end
+
+  def empty_grid?
+    flat_grid = @grid.flatten
+    flat_grid.each do |cell|
+      if cell.class != Integer
+        return false
+      end
+    end
+    return true
+  end
+
+  def empty_cell?(value)
+    @grid.each do |row|
+      row.each do |cell|
+        if cell == value 
+          return true 
+        end
+      end
+    end
+    return false
+  end
+
+  def position(value)
+    flat_grid = @grid.flatten 
+    return flat_grid.index(value)
+  end
+end
+# this is a test
 player = Player.new
 board = Board.new
 while !board.win?(player)
   p board.grid
-  puts "choose"
-  move = gets.chomp.to_i
-  p board.mark_movement(move, player)
+  move = player.get_move
+  if board.empty_cell?(move)
+    board.mark_movement(move, player)
+  else 
+    puts "CELL ALREADY CHOSEN"
+    next
+  end
   p board.grid
   board.grid.each do |row|
     puts "- - - - -"
     puts row.join(' | ')
   end
   puts "- - - - -"
+  p board.empty_grid?
 end
+
+
 
