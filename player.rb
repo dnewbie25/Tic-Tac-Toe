@@ -15,6 +15,16 @@ class Player
 
   def get_move
     puts "Choose a number in the grid"
+    move = gets.chomp.to_i 
+    return move
+  end
+
+  def winner?
+    if win?(player)
+      return true 
+    else 
+      return false
+    end
   end
 end
 
